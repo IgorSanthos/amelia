@@ -3,7 +3,7 @@ from pywinauto import application
 # Conecte-se ao aplicativo
 app = application.Application().connect(title_re=".*Selecione a pasta.*")
 
-# Acesse a janela
+# Acesse a janel
 dialog = app.window(title_re=".*Selecione a pasta.*")
 
 # Obtenha o endereço da pasta selecionada
