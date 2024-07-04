@@ -1,4 +1,0 @@
-from g5.activar_cliente import ativar_cliente
-cliente = 'NLBFILIA'
-
-ativar_cliente(cliente)
