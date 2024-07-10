@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import Tk, Label, Frame, TOP, messagebox, Scrollbar, Text
 from tkinter.ttk import Progressbar
 import pandas as pd
-from client.df_cliente_relatorios import dados
+from client.df_clientes import dados
 
 def move_files():
     
@@ -70,14 +70,18 @@ def move_files():
         # Caminho Destino
         clienteDest = Path(row['Destino']) / dtCliente
         arquivos = {
-            'Recebida': list((clienteJettax).glob('*'))
+            'Recebida': list((clienteJettax/'2024'/date_month/'Recebida'/'Autorizada').glob('*')),
+            'Emitidas': list((clienteJettax/'2024'/date_month/'Emitida'/'Autorizada').glob('*')),
         }
         destinos = {
-            'danfe': [clienteDest / 'Arquivos XML']
+            'danfe': [clienteDest / 'Arquivos XML/Saídas', clienteDest / 'Arquivos XML/Entradas']
             }
         # Envio para Movimentação de Arquivos
         try:
             for arquivo in arquivos['Recebida']:
+                shutil.copy(arquivo, destinos['danfe'][1])
+            
+            for arquivo in arquivos['Emitidas']:
                 shutil.copy(arquivo, destinos['danfe'][0])
 
             # Separando as barras para que seja retirado do endereço o nome do cliente
