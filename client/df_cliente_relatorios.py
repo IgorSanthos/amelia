@@ -75,7 +75,7 @@ dados = {
                 r'W:\Shared With Me\Clientes\A&C Matriz\2024\Fiscal',
                 r'W:\Shared With Me\Clientes\Sisnac\2024\Fiscal',
                 r'W:\Shared With Me\Clientes\Iris & Gustavo\2024\Fiscal',
-                r'W:\Shared With Me\Clientes\Nlb Comércio\2024\Fiscal',
+                r'W:\Shared With Me\Clientes\Nlb Indústria\2024\Fiscal',
                 r'W:\Shared With Me\Clientes\Yabiku Materiais (filial 01) L3\2024\Fiscal',
                 r'W:\Shared With Me\Clientes\A&C Yabiku (filial 1) L4\2024\Fiscal',
                 r'W:\Shared With Me\Clientes\Salgateria\2024\Fiscal',
