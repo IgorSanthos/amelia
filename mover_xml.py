@@ -7,7 +7,7 @@ from tkinter.ttk import Progressbar
 import pandas as pd
 from client.df_clientes import dados
 
-def move_files():
+def move_xml():
     
     messages_list = []
     # data da origem
@@ -132,7 +132,7 @@ def save_messages_list_to_desktop(messages_list):
 def processar_dados_cluster():
     messages_list = []
     try:
-        move_files()
+        move_xml()
     except FileNotFoundError as e:
         messages_list.append(f"Erro: Arquivo não encontrado - {e}")
         save_messages_list_to_desktop(messages_list)

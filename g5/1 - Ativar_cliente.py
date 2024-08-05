@@ -14,10 +14,10 @@ def ativar_cliente(cliente):
     try:
         # ativar empresa
         time.sleep(2)
-        img = pa.locateCenterOnScreen('g5/Ativar.png', confidence=0.8)
+        img = pa.locateCenterOnScreen('g5/img/Ativar.png', confidence=0.8)
         pa.click(img.x, img.y)# Ativar
         time.sleep(2)
-        img = pa.locateCenterOnScreen('g5/data.png', confidence=0.8)
+        img = pa.locateCenterOnScreen('g5/img/data.png', confidence=0.8)
         pa.click(img.x, img.y)# Data
         pa.write(data_ativar)
         pa.press('tab')
