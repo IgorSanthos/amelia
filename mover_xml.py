@@ -8,13 +8,12 @@ import pandas as pd
 from client.df_clientes import dados
 
 def move_xml():
-    
     messages_list = []
-    # data da origem
+    # Data da origem
     hoje = datetime.now()
-    date_month='6'
+    date_month = '7'
 
-    # data do destino
+    # Data do destino
     data_atual = datetime.now()
     primeiro_dia_mes_atual = data_atual.replace(day=1)
     ultimo_dia_mes_anterior = primeiro_dia_mes_atual - timedelta(days=1)
@@ -24,7 +23,7 @@ def move_xml():
     dtCliente = f"{mes_anterior}_{nome_mes}"
 
     # Criando o DataFrame
-    df =  pd.DataFrame(dados) 
+    df = pd.DataFrame(dados)
 
     # Configuração da janela de progresso
     root = Tk()
@@ -47,6 +46,7 @@ def move_xml():
     def update_progress(count, total):
         progress['value'] = (count / total) * 100
         root.update_idletasks()
+
     # Função para fechar a janela Tkinter
     def close_window():
         root.destroy()
@@ -60,46 +60,56 @@ def move_xml():
         # Verificar se o caminho de origem existe
         if not clienteJettax.exists():
             # Separando as barras para que seja retirado do endereço o nome do cliente
-            clienteJettax=str(clienteJettax)
+            clienteJettax = str(clienteJettax)
             ultima_barra = clienteJettax.rfind('\\')
-            clienteJettax_name = clienteJettax[ultima_barra + 1:]      
+            clienteJettax_name = clienteJettax[ultima_barra + 1:]
             messages_list.append(f"Caminho de origem não encontrado: {clienteJettax_name}")
-            update_progress(index +1, total_files)
+            update_progress(index + 1, total_files)
             continue  # Continua para o próximo arquivo
 
         # Caminho Destino
         clienteDest = Path(row['Destino']) / dtCliente
         arquivos = {
-            'Recebida': list((clienteJettax/'2024'/date_month/'Recebida'/'Autorizada').glob('*')),
-            'Emitidas': list((clienteJettax/'2024'/date_month/'Emitida'/'Autorizada').glob('*')),
+            'Recebida': list((clienteJettax / '2024' / date_month / 'Recebida' / 'Autorizada').glob('*')),
+            'Emitidas': list((clienteJettax / '2024' / date_month / 'Emitida' / 'Autorizada').glob('*')),
+            'Canceladas': list((clienteJettax / '2024' / date_month / 'Emitida' / 'Cancelada').glob('*')),
         }
         destinos = {
             'danfe': [clienteDest / 'Arquivos XML/Saídas', clienteDest / 'Arquivos XML/Entradas']
-            }
+        }
+        
+        # Verificar se os diretórios de destino existem e criar se não existirem
+        for destino in destinos['danfe']:
+            destino.mkdir(parents=True, exist_ok=True)
+        
         # Envio para Movimentação de Arquivos
         try:
             for arquivo in arquivos['Recebida']:
-                shutil.copy(arquivo, destinos['danfe'][1])
-            
+                shutil.copy(arquivo, destinos['danfe'][1] / arquivo.name)
+
             for arquivo in arquivos['Emitidas']:
-                shutil.copy(arquivo, destinos['danfe'][0])
+                shutil.copy(arquivo, destinos['danfe'][0] / arquivo.name)
+            
+            for arquivo in arquivos['Canceladas']:
+                shutil.copy(arquivo, destinos['danfe'][0] / arquivo.name)
 
             # Separando as barras para que seja retirado do endereço o nome do cliente
-            clienteDest=str(clienteDest)
+            clienteDest = str(clienteDest)
             terceira_barra = clienteDest.find('\\', clienteDest.find('\\', clienteDest.find('\\') + 1) + 1)
             quarta_barra = clienteDest.find('\\', terceira_barra + 1)
             client_name = clienteDest[terceira_barra + 1:quarta_barra]
             messages_list.append(f"Arquivos do ( {client_name} ) copiados com sucesso !\n")
-    # tratamento de Erros
+        
         except (FileNotFoundError, PermissionError) as e:
-            messages_list.append(f"Erro ao copiar arquivo:      {e}\n")
+            messages_list.append(f"Erro ao copiar arquivo: {e}\n")
         except Exception as e:
-            messages_list.append(f"Erro inesperado ao copiar arquivo:       {e}\n")
+            messages_list.append(f"Erro inesperado ao copiar arquivo: {e}\n")
+        
         update_progress(index + 1, total_files)
 
     # Salva todas as mensagens ao final do processamento
     save_messages_list_to_desktop(messages_list)
-    messagebox.showinfo("Aviso","Arquivos do dia enviados com sucesso")
+    messagebox.showinfo("Aviso", "Arquivos do dia enviados com sucesso")
     # Fecha a janela Tkinter após o término do processamento
     root.after(1000, close_window)  # Espera 1 segundo antes de fechar a janela
     root.mainloop()
@@ -125,9 +135,8 @@ def save_messages_list_to_desktop(messages_list):
     # Adicionar as mensagens ao widget Text
     for message in messages_list:
         text_box.insert(tk.END, message + "\n")
-    text_box.config(state=tk.DISABLED)# Impede a edição do conteúdo
+    text_box.config(state=tk.DISABLED)  # Impede a edição do conteúdo
     root.mainloop()
-
 
 def processar_dados_cluster():
     messages_list = []
